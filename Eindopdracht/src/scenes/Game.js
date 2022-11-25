@@ -16,24 +16,11 @@ export default class Game extends Phaser.Scene {
     this.load.image("background", "assets/bg_layer1.png");
     this.load.image("platform", "assets/ground_grass.png");
     this.load.image("bunny-stand", "assets/bunny1_stand.png");
-    this.load.image("cloud", "assets/cloud.png");
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   create() {
     this.add.image(240, 320, "background").setScrollFactor(1, 0);
-    this.cloud1 = this.add
-      .image(240, 200, "cloud")
-      .setScrollFactor(1, 0.1)
-      .setScale(0.1);
-    this.cloud2 = this.add
-      .image(240, 340, "cloud")
-      .setScrollFactor(1, 0.2)
-      .setScale(0.2);
-    this.cloud3 = this.add
-      .image(240, 400, "cloud")
-      .setScrollFactor(1, 0.4)
-      .setScale(0.4);
 
     this.platforms = this.physics.add.staticGroup();
 
@@ -75,11 +62,6 @@ export default class Game extends Phaser.Scene {
       }
     });
 
-    if (this.cloud3.y >= scrollY + 700) {
-      this.cloud3.y = scrollY - Phaser.Math.Between(50, 100);
-      this.cloud3.body.updateFromGameObject();
-    }
-
     const touchingDown = this.player.body.touching.down;
 
     if (touchingDown) {
@@ -107,7 +89,6 @@ export default class Game extends Phaser.Scene {
     if (sprite.x < -halfWidth) {
       sprite.x = gameWidth + halfWidth;
     } else if (sprite.x > gameWidth + halfWidth) {
-      console.log(sprite.x);
       sprite.x = -halfWidth;
     }
   }
