@@ -33,8 +33,14 @@
             this.load.image("clouds-white", "clouds-white.png");
             this.load.image("clouds-white-small", "clouds-white-small.png");
         }
-        function createScene() { }
-        function updateScene() { }
+        function createScene() {
+            cloudsWhite = this.add.tileSprite(640, 200, 1280, 400, "clouds-white");
+            cloudsWhiteSmall = this.add.tileSprite(640, 200, 1280, 400, "clouds-white-small");
+        }
+        function updateScene() {
+            cloudsWhite.tilePositionX += 0.5;
+            cloudsWhiteSmall.tilePositionX += 0.25;
+        }
 
     </script>
 </body>
