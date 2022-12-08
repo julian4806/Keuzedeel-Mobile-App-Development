@@ -1,43 +1,54 @@
 import Phaser from "../lib/phaser.js";
+import Carrot from "../game/Carrot.js";
+
 export default class Game extends Phaser.Scene {
-  /** @type {Phaser.Physics.Arcade.StaticGroup} */
   platforms;
-  /** @type {Phaser.Physics.Arcade.Sprite} */
   player;
-  /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
   cursors;
+  carrots;
+  carrotsCollected = 0;
+  carrotsCollectedText;
+
   constructor() {
     super("game");
   }
+
+  init() {
+    this.carrotsCollected = 0;
+  }
+
   preload() {
-    this.load.image("background", "assets/bg_layer1.png");
+    // Load all the backgrouds in
+    this.load.image("background", "assets/bg_layer1.jpg");
     this.load.image("platform", "assets/ground_grass.png");
     this.load.image("bunny-stand", "assets/bunny1_stand.png");
-    this.load.image("cloud", "assets/cloud.png");
+    this.load.image("bunny-jump", "assets/bunny1_jump.png");
+    this.load.image("carrot", "assets/carrot.png");
+    this.load.audio("jump", "assets/sfx/phaseJump1.wav");
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.blocked = false;
   }
+
   create() {
-    this.coulds = [];
-    this.add.image(240, 320, "background").setScrollFactor(1, 0);
-    let cloudCount = 10;
-    for (let i = 0; i < cloudCount; i++) {
-      this.coulds.push(
-        this.add
-          .image(Math.random() * 480, Math.random() * 640, "cloud")
-          .setScale((i + 1) / (cloudCount * 2))
-      );
-    }
+    this.game_width = this.scale.width;
+    this.game_height = this.scale.height;
+    this.background = this.add.tileSprite(240, 320, 0, 0, "background");
+    this.background.setScrollFactor(1, 0);
+
+
+    // this.add.image(240, 320, "background");
     this.platforms = this.physics.add.staticGroup();
+
+    // then create 5 platforms from the group
     for (let i = 0; i < 5; ++i) {
       const x = Phaser.Math.Between(80, 400);
       const y = 150 * i;
-      /** @type {Phaser.Physics.Arcade.Sprite} */
       const platform = this.platforms.create(x, y, "platform");
       platform.scale = 0.5;
-      /** @type {Phaser.Physics.Arcade.StaticBody} */
       const body = platform.body;
       body.updateFromGameObject();
     }
+
     this.player = this.physics.add
       .sprite(240, 320, "bunny-stand")
       .setScale(0.5);
@@ -46,58 +57,126 @@ export default class Game extends Phaser.Scene {
     this.player.body.checkCollision.left = false;
     this.player.body.checkCollision.right = false;
     this.cameras.main.startFollow(this.player);
-    // set the horizontal dead zone to 1.5x game width
     this.cameras.main.setDeadzone(this.scale.width * 1.5);
-    //this.game.world.setBounds(0, 0, 800, 800);
+    this.carrots = this.physics.add.group({
+      classType: Carrot,
+    });
+
+    this.physics.add.collider(this.platforms, this.carrots);
+    this.physics.add.overlap(
+      this.player,
+      this.carrots,
+      this.handleCollectCarrot,
+      undefined,
+      this
+    );
+
+    this.carrotsCollectedText = this.add
+      .text(240, 10, "Carrots: 0", { color: "#000", fontSize: 24 })
+      .setScrollFactor(0)
+      .setOrigin(0.5, 0);
   }
-  update() {
+
+  update(t, dt) {
+    if (!this.player) {
+      return;
+    }
     this.platforms.children.iterate((child) => {
-      /** @type {Phaser.Physics.Arcade.Sprite} */
       const platform = child;
+
       const scrollY = this.cameras.main.scrollY;
+      // checks if a platform touches the ground
       if (platform.y >= scrollY + 700) {
         platform.y = scrollY - Phaser.Math.Between(50, 100);
         platform.body.updateFromGameObject();
+        this.addCarrotAbove(platform);
       }
     });
-    console.log(this.cameras.main.scrollY);
-    this.coulds.forEach((cloud) => {
-      cloud.y = cloud.y + cloud.scale;
-      //cloud.y = this.cameras.main.scrollY
-      cloud.x = cloud.x + cloud.scale;
-      if (cloud.y >= 640 + this.cameras.main.scrollY) {
-        cloud.y = this.cameras.main.scrollY;
-      }
-      if (cloud.x >= 480) {
-        cloud.x = 0;
-      }
-    });
+
     const touchingDown = this.player.body.touching.down;
+
     if (touchingDown) {
       this.player.setVelocityY(-300);
+      this.player.setTexture("bunny-jump");
+      this.sound.play("jump");
     }
-    // left and right input logic
+
+    const vy = this.player.body.velocity.y;
+    if (vy > 0 && this.player.texture.key !== "bunny-stand") {
+      this.player.setTexture("bunny-stand");
+    }
+
+    // Left keypress
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
+      this.background.x -= 0.5;
+      //   rightkeypress
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
+      this.background.x += 0.5;
     } else {
-      // stop movement if not left or right
       this.player.setVelocityX(0);
+      this.background.x -= 0.1;
     }
+
     this.horizontalWrap(this.player);
+    this.resetBackground();
+
+    const bottomPlatform = this.findBottomMostPlatform();
+    if (this.player.y > bottomPlatform.y + 200) {
+      this.scene.start("game-over");
+    }
   }
-  /**
-   * @param {Phaser.GameObjects.Sprite} sprite
-   */
+
   horizontalWrap(sprite) {
     const halfWidth = sprite.displayWidth * 0.5;
     const gameWidth = this.scale.width;
     if (sprite.x < -halfWidth) {
       sprite.x = gameWidth + halfWidth;
     } else if (sprite.x > gameWidth + halfWidth) {
-      console.log(sprite.x);
       sprite.x = -halfWidth;
+    }
+  }
+
+  addCarrotAbove(sprite) {
+    const y = sprite.y - sprite.displayHeight;
+    const carrot = this.carrots.get(sprite.x, y, "carrot");
+    carrot.setActive(true);
+    carrot.setVisible(true);
+    this.add.existing(carrot);
+    carrot.body.setSize(carrot.width, carrot.height);
+    this.physics.world.enable(carrot);
+    return carrot;
+  }
+
+  handleCollectCarrot(player, carrot) {
+    this.carrots.killAndHide(carrot);
+    this.physics.world.disableBody(carrot.body);
+    this.carrotsCollected++;
+    this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`;
+  }
+
+  findBottomMostPlatform() {
+    const platforms = this.platforms.getChildren();
+    let bottomPlatform = platforms[0];
+    for (let i = 1; i < platforms.length; ++i) {
+      const platform = platforms[i];
+      // discard any platforms that are above current
+      if (platform.y < bottomPlatform.y) {
+        continue;
+      }
+      bottomPlatform = platform;
+    }
+    return bottomPlatform;
+  }
+
+  resetBackground() {
+    if (Math.floor(this.background.x) === 120 && !this.blocked) {
+      console.log(true);
+      this.blocked = true;
+      setTimeout(() => {
+        this.blocked = false;
+      }, 1000);
     }
   }
 }

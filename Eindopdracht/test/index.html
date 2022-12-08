@@ -1,0 +1,42 @@
+<!-- https://www.thepolyglotdeveloper.com/2020/08/continuous-side-scrolling-phaser-game-tile-sprites/ -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.24.1/dist/phaser.min.js"></script>
+</head>
+
+<body>
+    <div id="game"></div>
+    <script>
+
+        const phaserConfig = {
+            type: Phaser.AUTO,
+            parent: "game",
+            width: 1280,
+            height: 720,
+            backgroundColor: "#5DACD8",
+            scene: {
+                init: initScene,
+                preload: preloadScene,
+                create: createScene,
+                update: updateScene
+            }
+        };
+
+        const game = new Phaser.Game(phaserConfig);
+
+        var cloudsWhite, cloudsWhiteSmall;
+
+        function initScene() { }
+        function preloadScene() {
+            this.load.image("clouds-white", "clouds-white.png");
+            this.load.image("clouds-white-small", "clouds-white-small.png");
+        }
+        function createScene() { }
+        function updateScene() { }
+
+    </script>
+</body>
+
+</html>

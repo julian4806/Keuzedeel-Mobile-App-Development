@@ -1,3 +1,1 @@
-export default window.Phaser;
-
-Phaser.AUTO
+export default window.Phaser
