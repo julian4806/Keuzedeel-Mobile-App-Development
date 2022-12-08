@@ -25,8 +25,8 @@ export default class Game extends Phaser.Scene {
     this.load.image("bunny-jump", "assets/bunny1_jump.png");
     this.load.image("carrot", "assets/carrot.png");
     this.load.audio("jump", "assets/sfx/phaseJump1.wav");
+
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.blocked = false;
   }
 
   create() {
@@ -108,18 +108,18 @@ export default class Game extends Phaser.Scene {
     // Left keypress
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
-      this.background.x -= 0.5;
+      this.background.tilePositionX += 0.3;
       //   rightkeypress
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
-      this.background.x += 0.5;
+      this.background.tilePositionX -= 0.3;
     } else {
       this.player.setVelocityX(0);
-      this.background.x -= 0.1;
+      //   this.background.x -= 0.1;
+      this.background.tilePositionX += 0.1;
     }
 
     this.horizontalWrap(this.player);
-    this.resetBackground();
 
     const bottomPlatform = this.findBottomMostPlatform();
     if (this.player.y > bottomPlatform.y + 200) {
@@ -167,15 +167,5 @@ export default class Game extends Phaser.Scene {
       bottomPlatform = platform;
     }
     return bottomPlatform;
-  }
-
-  resetBackground() {
-    if (Math.floor(this.background.x) === 120 && !this.blocked) {
-      console.log(true);
-      this.blocked = true;
-      setTimeout(() => {
-        this.blocked = false;
-      }, 1000);
-    }
   }
 }
