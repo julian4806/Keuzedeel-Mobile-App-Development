@@ -20,6 +20,7 @@ export default class Game extends Phaser.Scene {
   preload() {
     // Load all the backgrouds in
     this.load.image("background", "assets/bg_layer1.jpg");
+    this.load.image("clouds", "assets/clouds-white-small.png");
     this.load.image("platform", "assets/ground_grass.png");
     this.load.image("bunny-stand", "assets/bunny1_stand.png");
     this.load.image("bunny-jump", "assets/bunny1_jump.png");
@@ -33,7 +34,9 @@ export default class Game extends Phaser.Scene {
     this.game_width = this.scale.width;
     this.game_height = this.scale.height;
     this.background = this.add.tileSprite(240, 320, 0, 0, "background");
+    this.clouds = this.add.tileSprite(240, 320, 0, 0, "clouds");
     this.background.setScrollFactor(1, 0);
+    this.clouds.setScrollFactor(1, 0);
 
     // this.add.image(240, 320, "background");
     this.platforms = this.physics.add.staticGroup();
@@ -109,13 +112,16 @@ export default class Game extends Phaser.Scene {
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
       this.background.tilePositionX += 0.3;
+      this.clouds.tilePositionX += 0.5;
       //   rightkeypress
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
       this.background.tilePositionX -= 0.3;
+      this.clouds.tilePositionX -= 0.5;
     } else {
       this.player.setVelocityX(0);
       //   this.background.x -= 0.1;
+      this.clouds.tilePositionX += 0.1;
       this.background.tilePositionX += 0.1;
     }
 
