@@ -79,7 +79,7 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0.5, 0);
   }
 
-  update(t, dt) {
+  update(time, delta) {
     if (!this.player) {
       return;
     }
@@ -96,32 +96,32 @@ export default class Game extends Phaser.Scene {
     });
 
     const touchingDown = this.player.body.touching.down;
-
-    if (touchingDown) {
-      this.player.setVelocityY(-300);
+    const vy = this.player.body.velocity.y;
+    if (touchingDown && vy === 0) {
+      this.player.setVelocityY(-500);
       this.player.setTexture("bunny-jump");
       this.sound.play("jump");
+      this.clouds.tilePositionY += 5;
     }
-
-    const vy = this.player.body.velocity.y;
     if (vy > 0 && this.player.texture.key !== "bunny-stand") {
       this.player.setTexture("bunny-stand");
+      this.clouds.tilePositionY -= 5;
     }
 
     // Left keypress
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
-      this.background.tilePositionX += 0.3;
+      this.background.tilePositionX += 0.4;
       this.clouds.tilePositionX += 0.5;
       //   rightkeypress
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
-      this.background.tilePositionX -= 0.3;
+      this.background.tilePositionX -= 0.4;
       this.clouds.tilePositionX -= 0.5;
     } else {
       this.player.setVelocityX(0);
       //   this.background.x -= 0.1;
-      this.clouds.tilePositionX += 0.1;
+      this.clouds.tilePositionX += 0.2;
       this.background.tilePositionX += 0.1;
     }
 
@@ -159,6 +159,9 @@ export default class Game extends Phaser.Scene {
     this.physics.world.disableBody(carrot.body);
     this.carrotsCollected++;
     this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`;
+    this.changeGameSpeedAccordingToTheAmountOfCarrotsCollected(
+      this.carrotsCollected
+    );
   }
 
   findBottomMostPlatform() {
@@ -173,5 +176,9 @@ export default class Game extends Phaser.Scene {
       bottomPlatform = platform;
     }
     return bottomPlatform;
+  }
+
+  changeGameSpeedAccordingToTheAmountOfCarrotsCollected(collectedCarrotCount) {
+    console.log(collectedCarrotCount);
   }
 }
