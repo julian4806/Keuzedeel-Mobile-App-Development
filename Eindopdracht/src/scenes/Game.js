@@ -7,7 +7,14 @@ export default class Game extends Phaser.Scene {
   cursors;
   carrots;
   carrotsCollected = 0;
+
   carrotsCollectedText;
+  pausePlayIndicatorText;
+  speedIndicatorText;
+
+  startGame = false;
+
+  bunnySpeed = 400;
 
   constructor() {
     super("game");
@@ -26,7 +33,6 @@ export default class Game extends Phaser.Scene {
     this.load.image("bunny-jump", "assets/bunny1_jump.png");
     this.load.image("carrot", "assets/carrot.png");
     this.load.audio("jump", "assets/sfx/phaseJump1.wav");
-
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
@@ -77,6 +83,29 @@ export default class Game extends Phaser.Scene {
       .text(240, 10, "Carrots: 0", { color: "#000", fontSize: 24 })
       .setScrollFactor(0)
       .setOrigin(0.5, 0);
+
+    this.pausePlayIndicatorText = this.add
+      .text(0, 0, "Paused", { color: "#000" })
+      .setScrollFactor(0)
+      .setOrigin(0, 0);
+
+    this.speedIndicatorText = this.add
+      .text(355, 0, "Speed: 400mph", {
+        color: "#000",
+        backgroundColor: "green",
+      })
+      .setScrollFactor(0)
+      .setOrigin(0, 0);
+
+    this.input.on("pointerdown", () => {
+      if (!this.startGame) {
+        this.startGame = true;
+        this.pausePlayIndicatorText.text = `Playing`;
+      } else {
+        this.startGame = false;
+        this.pausePlayIndicatorText.text = `Paused`;
+      }
+    });
   }
 
   update(time, delta) {
@@ -94,11 +123,10 @@ export default class Game extends Phaser.Scene {
         this.addCarrotAbove(platform);
       }
     });
-
     const touchingDown = this.player.body.touching.down;
     const vy = this.player.body.velocity.y;
-    if (touchingDown && vy === 0) {
-      this.player.setVelocityY(-500);
+    if (touchingDown && vy === 0 && this.startGame) {
+      this.player.setVelocityY(-this.bunnySpeed);
       this.player.setTexture("bunny-jump");
       this.sound.play("jump");
       this.clouds.tilePositionY += 5;
@@ -179,6 +207,21 @@ export default class Game extends Phaser.Scene {
   }
 
   changeGameSpeedAccordingToTheAmountOfCarrotsCollected(collectedCarrotCount) {
-    console.log(collectedCarrotCount);
+    this.bunnySpeed += +JSON.parse(`${collectedCarrotCount}`);
+    this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
+    if (this.bunnySpeed > 550) this.bunnySpeed = 400;
+
+    // if (this.bunnySpeed > 450) {
+    //   this.speedIndicatorText.setBackgroundColor("yellow");
+    // } else if (this.bunnySpeed > 500) {
+    //   this.speedIndicatorText.setBackgroundColor("orange");
+    // } else if (this.bunnySpeed > 600) {
+    //   this.speedIndicatorText.setBackgroundColor("red");
+    // } else if (this.bunnySpeed > 650) {
+    //   this.bunnySpeed = 400;
+    //   this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
+    //   this.speedIndicatorText.setBackgroundColor("green");
+    // }
+    // console.log(this.bunnySpeed);
   }
 }

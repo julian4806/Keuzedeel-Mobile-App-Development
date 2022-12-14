@@ -1,26 +1,10 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, "", {
-  preload: preload,
-  create: create,
-  update: update,
-});
-var sky;
-var cursors;
-
-function preload() {
-  game.load.image("sky", "sky.png");
+for (i = 0; i <= 100; i += 10) {
+  console.log(color(i / 100));
 }
 
-function create() {
-  game.physics.startSystem(Phaser.Physics.ARCADE);
-  sky = game.add.sprite(0, 0, "sky");
-  game.physics.enable(sky, Phaser.Physics.ARCADE);
-  cursors = game.input.keyboard.createCursorKeys();
-}
-
-function update() {
-  if (cursors.left.isDown) {
-    sky.body.velocity.x = -150;
-  } else {
-    sky.body.velocity.x = 0;
-  }
+function color(quality) {
+  var h = 355 + 125 * quality;
+  var s = 130 - 60 * quality;
+  var l = 45 + Math.abs(0.5 - quality) * 30;
+  return "hsl(" + h + ", " + s + "%, " + l + "%)";
 }
