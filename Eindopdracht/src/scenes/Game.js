@@ -13,8 +13,14 @@ export default class Game extends Phaser.Scene {
   speedIndicatorText;
 
   startGame = false;
-
   bunnySpeed = 400;
+  timer = 0;
+
+  // trystuff
+  now;
+  fps = 60;
+  then = Date.now();
+  interval = 1000 / 60;
 
   constructor() {
     super("game");
@@ -37,16 +43,17 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
+    //this.scene.start("start-game"); // werkt niet
+    // this.physics.world.setFPS(60);
+
     this.game_width = this.scale.width;
     this.game_height = this.scale.height;
     this.background = this.add.tileSprite(240, 320, 0, 0, "background");
     this.clouds = this.add.tileSprite(240, 320, 0, 0, "clouds");
     this.background.setScrollFactor(1, 0);
     this.clouds.setScrollFactor(1, 0);
-
     // this.add.image(240, 320, "background");
     this.platforms = this.physics.add.staticGroup();
-
     // then create 5 platforms from the group
     for (let i = 0; i < 5; ++i) {
       const x = Phaser.Math.Between(80, 400);
@@ -92,12 +99,12 @@ export default class Game extends Phaser.Scene {
     this.speedIndicatorText = this.add
       .text(355, 0, "Speed: 400mph", {
         color: "#000",
-        backgroundColor: "green",
+        backgroundColor: "lightgreen",
       })
       .setScrollFactor(0)
       .setOrigin(0, 0);
 
-    this.input.on("pointerdown", () => {
+    this.input.keyboard.on("keydown-SPACE", () => {
       if (!this.startGame) {
         this.startGame = true;
         this.pausePlayIndicatorText.text = `Playing`;
@@ -109,9 +116,16 @@ export default class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
-    if (!this.player) {
-      return;
+    if (!this.player) return;
+    this.now = Date.now();
+    if (delta > this.interval) {
+      this.then = this.now - (delta % this.interval);
+      this.timer++;
+      console.log(Math.floor(this.timer++ / (this.fps * 2)));
     }
+
+    // console.log(Math.floor(this.timer++ / 60));
+
     this.platforms.children.iterate((child) => {
       const platform = child;
 
@@ -209,19 +223,21 @@ export default class Game extends Phaser.Scene {
   changeGameSpeedAccordingToTheAmountOfCarrotsCollected(collectedCarrotCount) {
     this.bunnySpeed += +JSON.parse(`${collectedCarrotCount}`);
     this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
-    if (this.bunnySpeed > 550) this.bunnySpeed = 400;
 
-    // if (this.bunnySpeed > 450) {
-    //   this.speedIndicatorText.setBackgroundColor("yellow");
-    // } else if (this.bunnySpeed > 500) {
-    //   this.speedIndicatorText.setBackgroundColor("orange");
-    // } else if (this.bunnySpeed > 600) {
-    //   this.speedIndicatorText.setBackgroundColor("red");
-    // } else if (this.bunnySpeed > 650) {
-    //   this.bunnySpeed = 400;
-    //   this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
-    //   this.speedIndicatorText.setBackgroundColor("green");
-    // }
+    if (this.bunnySpeed > 450)
+      this.speedIndicatorText.setBackgroundColor("yellow");
+
+    if (this.bunnySpeed > 500)
+      this.speedIndicatorText.setBackgroundColor("orange");
+
+    if (this.bunnySpeed > 550)
+      this.speedIndicatorText.setBackgroundColor("red");
+
+    if (this.bunnySpeed > 600) {
+      this.bunnySpeed = 400;
+      this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
+      this.speedIndicatorText.setBackgroundColor("lightgreen");
+    }
     // console.log(this.bunnySpeed);
   }
 }
