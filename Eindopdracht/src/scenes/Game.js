@@ -12,15 +12,8 @@ export default class Game extends Phaser.Scene {
   pausePlayIndicatorText;
   speedIndicatorText;
 
-  startGame = false;
-  bunnySpeed = 400;
   timer = 0;
-
-  // trystuff
-  now;
-  fps = 60;
-  then = Date.now();
-  interval = 1000 / 60;
+  bunnySpeed = 400;
 
   constructor() {
     super("game");
@@ -43,9 +36,6 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    //this.scene.start("start-game"); // werkt niet
-    // this.physics.world.setFPS(60);
-
     this.game_width = this.scale.width;
     this.game_height = this.scale.height;
     this.background = this.add.tileSprite(240, 320, 0, 0, "background");
@@ -64,6 +54,7 @@ export default class Game extends Phaser.Scene {
       body.updateFromGameObject();
     }
 
+    // Bunny🐇 Physics
     this.player = this.physics.add
       .sprite(240, 320, "bunny-stand")
       .setScale(0.5);
@@ -77,6 +68,7 @@ export default class Game extends Phaser.Scene {
       classType: Carrot,
     });
 
+    // Carrot Colliders
     this.physics.add.collider(this.platforms, this.carrots);
     this.physics.add.overlap(
       this.player,
@@ -86,13 +78,14 @@ export default class Game extends Phaser.Scene {
       this
     );
 
+    // Create Texts
     this.carrotsCollectedText = this.add
       .text(240, 10, "Carrots: 0", { color: "#000", fontSize: 24 })
       .setScrollFactor(0)
       .setOrigin(0.5, 0);
 
     this.pausePlayIndicatorText = this.add
-      .text(0, 0, "Paused", { color: "#000" })
+      .text(0, 0, "Press SPACE✅", { color: "#000" })
       .setScrollFactor(0)
       .setOrigin(0, 0);
 
@@ -104,6 +97,14 @@ export default class Game extends Phaser.Scene {
       .setScrollFactor(0)
       .setOrigin(0, 0);
 
+    this.coundownIndicatorText = this.add
+      .text(355, 0, "Time Left: 60", {
+        color: "#000",
+      })
+      .setScrollFactor(0)
+      .setOrigin(0, -1.2);
+
+    // Keyboard⌨️
     this.input.keyboard.on("keydown-SPACE", () => {
       if (!this.startGame) {
         this.startGame = true;
@@ -116,15 +117,8 @@ export default class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
+    this.countdown(time);
     if (!this.player) return;
-    this.now = Date.now();
-    if (delta > this.interval) {
-      this.then = this.now - (delta % this.interval);
-      this.timer++;
-      console.log(Math.floor(this.timer++ / (this.fps * 2)));
-    }
-
-    // console.log(Math.floor(this.timer++ / 60));
 
     this.platforms.children.iterate((child) => {
       const platform = child;
@@ -149,7 +143,6 @@ export default class Game extends Phaser.Scene {
       this.player.setTexture("bunny-stand");
       this.clouds.tilePositionY -= 5;
     }
-
     // Left keypress
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
@@ -169,9 +162,12 @@ export default class Game extends Phaser.Scene {
 
     this.horizontalWrap(this.player);
 
+    // check if player surpasses last platform ☠️
     const bottomPlatform = this.findBottomMostPlatform();
     if (this.player.y > bottomPlatform.y + 200) {
       this.scene.start("game-over");
+      this.timer = 0; //zzz
+      this.startGame = false;
     }
   }
 
@@ -239,5 +235,25 @@ export default class Game extends Phaser.Scene {
       this.speedIndicatorText.setBackgroundColor("lightgreen");
     }
     // console.log(this.bunnySpeed);
+  }
+
+  countdown(x) {
+    if (this.startGame) {
+      const time = Math.floor(this.timer++ / 60);
+      if (time < 61) {
+        this.coundownIndicatorText.text = `Time Left: ${60 - time}`;
+      } else {
+        this.scene.start("game-over");
+        this.timer = 0;
+        this.startGame = false; //zzz
+      }
+    }
+
+    //   this.timer = 0;
+    //   this.startGame = false;
+    //   this.scene.start("game-over");
+    // } else {
+    //   this.coundownIndicatorText.text = `Time Left: ${60 - x}`;
+    // }
   }
 }
