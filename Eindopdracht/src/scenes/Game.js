@@ -15,6 +15,12 @@ export default class Game extends Phaser.Scene {
   timer = 0;
   bunnySpeed = 400;
 
+  settingsButton;
+  leaderboardButton;
+
+  startGame;
+  canOpenMenus;
+
   constructor() {
     super("game");
   }
@@ -33,6 +39,12 @@ export default class Game extends Phaser.Scene {
     this.load.image("carrot", "assets/carrot.png");
     this.load.audio("jump", "assets/sfx/phaseJump1.wav");
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.settingsButton = document.querySelector(".settings-button");
+    this.leaderboardButton = document.querySelector(".leaderboard-button");
+
+    this.settingsModal = document.querySelector(".settings-modal");
+    this.leaderboardModal = document.querySelector(".leaderboard-modal");
   }
 
   create() {
@@ -139,6 +151,18 @@ export default class Game extends Phaser.Scene {
       this.sound.play("jump");
       this.clouds.tilePositionY += 5;
     }
+
+    // check if the game is paused, if so... The menu's can be opened
+    if (!this.startGame && touchingDown && vy === 0) {
+      this.canOpenMenus = true;
+      this.settingsButton.style.opacity = 1;
+      this.leaderboardButton.style.opacity = 1;
+    } else {
+      this.canOpenMenus = false;
+      this.settingsButton.style.opacity = 0.3;
+      this.leaderboardButton.style.opacity = 0.3;
+    }
+
     if (vy > 0 && this.player.texture.key !== "bunny-stand") {
       this.player.setTexture("bunny-stand");
       this.clouds.tilePositionY -= 5;
@@ -169,6 +193,23 @@ export default class Game extends Phaser.Scene {
       this.timer = 0; //zzz
       this.startGame = false;
     }
+
+    // Checks if the canOpenMenus variable is true or false and according to that decides if the user can open up the menu or not
+    this.settingsButton.onclick = () => {
+      if (this.canOpenMenus) {
+        this.settingsModal.innerHTML = 1;
+      } else {
+        this.settingsModal.innerHTML = 0;
+      }
+    };
+    // same thing here⭕
+    this.leaderboardButton.onclick = () => {
+      if (this.canOpenMenus) {
+        this.leaderboardModal.innerHTML = 1;
+      } else {
+        this.leaderboardModal.innerHTML = 0;
+      }
+    };
   }
 
   horizontalWrap(sprite) {

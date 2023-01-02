@@ -1,0 +1,224 @@
+$border-radius: 5px;
+$gray: rgb(224, 224, 224);
+$border: 1px solid #ccc;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+img {
+  pointer-events: none;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  font-family: sans-serif;
+}
+
+canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+  max-width: 100vw;
+  border-radius: $border-radius;
+  border: 3px solid salmon;
+}
+
+.settings-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 400px;
+  width: 300px;
+  background-color: white;
+  border-radius: $border-radius;
+  font-weight: bold;
+  padding: 10px;
+
+  form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .settings-modal-header {
+      padding: 10px;
+      text-align: center;
+      background-color: $gray;
+      border-radius: $border-radius;
+      border: $border;
+      font-size: 24px;
+    }
+
+    .username {
+      padding: 5px;
+      outline: none !important;
+      border: $border;
+      border-radius: $border-radius;
+    }
+
+    .user-image-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      height: 100%;
+      align-items: center;
+
+      input[type="file"] {
+        background-color: $gray;
+        border: $border;
+        border-radius: $border-radius;
+        padding: 10px;
+        cursor: pointer;
+      }
+
+      .display-current-image {
+        height: 180px;
+        width: 180px;
+        border-radius: $border-radius;
+        background-color: black;
+      }
+    }
+
+    .save-user-settings {
+      background-color: $gray;
+      border: $border;
+      border-radius: $border-radius;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .close-settings-modal {
+      position: fixed;
+      right: 0;
+      top: 0;
+      transform: translate(50%, -50%);
+      background-color: rgb(240, 239, 238);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      box-shadow: 0 0 3px black;
+      cursor: pointer;
+
+      > img {
+        width: 50%;
+        height: 50%;
+      }
+    }
+  }
+}
+
+.leaderboard-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 400px;
+  width: 300px;
+  background-color: white;
+  border-radius: $border-radius;
+  font-weight: bold;
+  padding: 10px;
+
+  > .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+
+    .leaderboard-modal-header {
+      padding: 10px;
+      text-align: center;
+      background-color: $gray;
+      border-radius: $border-radius;
+      border: $border;
+      font-size: 24px;
+    }
+
+    .leaderboard {
+      padding: 30px;
+      height: 100%;
+      border: $border;
+      border-radius: $border-radius;
+      background-color: $gray;
+      list-style: decimal;
+    }
+
+    .close-leaderboard-modal {
+      position: fixed;
+      right: 0;
+      top: 0;
+      transform: translate(50%, -50%);
+      background-color: rgb(240, 239, 238);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      box-shadow: 0 0 3px black;
+      cursor: pointer;
+
+      > img {
+        width: 50%;
+        height: 50%;
+      }
+    }
+  }
+}
+
+.settings-button {
+  position: fixed;
+  width: 10vw;
+  height: 10vw;
+  left: 40px;
+  top: 20px;
+  cursor: pointer;
+  opacity: 1;
+  display: flex;
+  background: white;
+  border-radius: $border-radius;
+  padding: 5px;
+}
+.leaderboard-button {
+  position: fixed;
+  width: 10vw;
+  height: 10vw;
+  right: 40px;
+  top: 20px;
+  cursor: pointer;
+  opacity: 1;
+  display: flex;
+  background: white;
+  border-radius: $border-radius;
+  padding: 5px;
+}
+
+.leaderboard-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 400px;
+  width: 300px;
+  background-color: white;
+  border-radius: $border-radius;
+  font-weight: bold;
+  padding: 10px;
+  display: none;
+}

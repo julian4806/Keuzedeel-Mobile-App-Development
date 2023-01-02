@@ -3,14 +3,64 @@
 <head>
 	<title>Bunny Jump!</title>
 	<script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
-	<link rel='stylesheet' href='style.css'>
+	<link rel='stylesheet' href='src/styles/style.css'>
+	<script type="module" src="src/main.js" defer></script>
 </head>
 <style>
 
 </style>
 
-<body style="background: #000;">
-	<script type="module" src="src/main.js"></script>
+<body>
+	<div class="settings-button">
+		<img src="assets/menu/settings.svg">
+	</div>
+	<div class="leaderboard-button">
+		<img src="assets/menu/cup.svg">
+	</div>
+
+	<!-- settings-modal👇 -->
+	<div class="settings-modal" style="display: block;">
+		<form action="">
+			<div class="settings-modal-header">settings</div>
+			<input type="text" placeholder="username" class="username">
+			<div class="user-image-wrapper">
+				<input type="file">
+				<div class="display-current-image">
+					<img src="">
+				</div>
+			</div>
+			<button class="save-user-settings">save</button>
+			<div class="close-settings-modal">
+				<img src="assets/menu/x.svg" alt="">
+			</div>
+		</form>
+	</div>
+	<!-- leaderboard-modal👇 -->
+	<div class="leaderboard-modal" style="display: none;">
+		<div class="modal-content">
+			<div class="leaderboard-modal-header">Leaderboard</div>
+			<ul class="leaderboard">
+				<!-- max 14 players, max 16 chars -->
+				<li>Sam</li>
+				<li>Sophocles</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>Cleapatra</li>
+				<li>wwwwwwwwwwwwwwww</li>
+			</ul>
+			<div class="close-leaderboard-modal">
+				<img src="assets/menu/x.svg" alt="">
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
