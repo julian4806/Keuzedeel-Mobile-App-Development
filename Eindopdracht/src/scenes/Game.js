@@ -34,8 +34,20 @@ export default class Game extends Phaser.Scene {
     this.load.image("background", "assets/bg_layer1.jpg");
     this.load.image("clouds", "assets/clouds-white-small.png");
     this.load.image("platform", "assets/ground_grass.png");
-    this.load.image("bunny-stand", "assets/bunny1_stand.png");
-    this.load.image("bunny-jump", "assets/bunny1_jump.png");
+
+    // localStorage.getItem("userimage");
+
+    let dataURI = localStorage.getItem("userimage");
+    if (dataURI !== null) {
+      let data = new Image();
+      data.src = dataURI;
+      this.textures.addBase64("bunny-stand", dataURI, data);
+      this.textures.addBase64("bunny-jump", dataURI, data);
+    } else {
+      this.load.image("bunny-stand", "assets/bunny1_stand.png");
+      this.load.image("bunny-jump", "assets/bunny1_jump.png");
+    }
+
     this.load.image("carrot", "assets/carrot.png");
     this.load.audio("jump", "assets/sfx/phaseJump1.wav");
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -97,7 +109,7 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     this.pausePlayIndicatorText = this.add
-      .text(0, 0, "Press SPACE✅", { color: "#000" })
+      .text(0, 0, "Press ENTER✅", { color: "#000" })
       .setScrollFactor(0)
       .setOrigin(0, 0);
 
@@ -117,11 +129,14 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0, -1.2);
 
     // Keyboard⌨️
-    this.input.keyboard.on("keydown-SPACE", () => {
+    this.input.keyboard.on("keydown-ENTER", () => {
+      closeModals();
       if (!this.startGame) {
+        caniopenthemenu = false;
         this.startGame = true;
         this.pausePlayIndicatorText.text = `Playing`;
       } else {
+        caniopenthemenu = true;
         this.startGame = false;
         this.pausePlayIndicatorText.text = `Paused`;
       }
@@ -197,17 +212,13 @@ export default class Game extends Phaser.Scene {
     // Checks if the canOpenMenus variable is true or false and according to that decides if the user can open up the menu or not
     this.settingsButton.onclick = () => {
       if (this.canOpenMenus) {
-        this.settingsModal.innerHTML = 1;
-      } else {
-        this.settingsModal.innerHTML = 0;
+        settingsOpen();
       }
     };
     // same thing here⭕
     this.leaderboardButton.onclick = () => {
       if (this.canOpenMenus) {
-        this.leaderboardModal.innerHTML = 1;
-      } else {
-        this.leaderboardModal.innerHTML = 0;
+        leaderboardOpen();
       }
     };
   }

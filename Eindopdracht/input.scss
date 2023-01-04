@@ -89,6 +89,15 @@ canvas {
         width: 180px;
         border-radius: $border-radius;
         background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: contain;
+
+        > img {
+          max-height: 100%;
+          max-width: 100%;
+        }
       }
     }
 

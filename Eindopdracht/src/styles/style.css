@@ -82,6 +82,14 @@ canvas {
   width: 180px;
   border-radius: 5px;
   background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: contain;
+}
+.settings-modal form .user-image-wrapper .display-current-image > img {
+  max-height: 100%;
+  max-width: 100%;
 }
 .settings-modal form .save-user-settings {
   background-color: rgb(224, 224, 224);

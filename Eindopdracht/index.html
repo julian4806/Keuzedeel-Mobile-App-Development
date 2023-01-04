@@ -4,6 +4,7 @@
 	<title>Bunny Jump!</title>
 	<script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
 	<link rel='stylesheet' href='src/styles/style.css'>
+	<script src='src/userInput.js' defer></script>
 	<script type="module" src="src/main.js" defer></script>
 </head>
 <style>
@@ -19,12 +20,12 @@
 	</div>
 
 	<!-- settings-modal👇 -->
-	<div class="settings-modal" style="display: block;">
-		<form action="">
+	<div class="settings-modal" style="display: none;">
+		<form>
 			<div class="settings-modal-header">settings</div>
 			<input type="text" placeholder="username" class="username">
 			<div class="user-image-wrapper">
-				<input type="file">
+				<input type="file" class="userimage">
 				<div class="display-current-image">
 					<img src="">
 				</div>
@@ -41,20 +42,9 @@
 			<div class="leaderboard-modal-header">Leaderboard</div>
 			<ul class="leaderboard">
 				<!-- max 14 players, max 16 chars -->
-				<li>Sam</li>
-				<li>Sophocles</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>Cleapatra</li>
-				<li>wwwwwwwwwwwwwwww</li>
+				<li>PLAYER1</li>
+				<li>PLAYER2</li>
+				<li>PLAYER3</li>
 			</ul>
 			<div class="close-leaderboard-modal">
 				<img src="assets/menu/x.svg" alt="">
