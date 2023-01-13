@@ -71,8 +71,8 @@ function saveUserSettingsToLocalStorage() {
   reader.addEventListener(
     "load",
     () => {
-      // localStorage.setItem("userimage", resizeImage(reader.result));
-      localStorage.setItem("userimage", reader.result);
+      // localStorage.setItem("userimage", resizeImage(reader.result, 70, 70));
+      localStorage.setItem("userimage", resizebase64(reader.result, 140, 180));
       localStorage.setItem("username", username.value);
       location.reload();
     },
@@ -109,19 +109,44 @@ function resetTextSaveButton() {
 }
 
 // test
-// function resizeImage(base64Str) {
-//   var img = new Image();
-//   img.src = base64Str;
+function resizebase64(base64, maxWidth, maxHeight) {
+  // Max size for thumbnail
+  if (typeof maxWidth === "undefined") maxWidth = 500;
+  if (typeof maxHeight === "undefined") maxHeight = 500;
 
-//   var canvas = document.createElement("canvas");
-//   var ctx = canvas.getContext("2d");
+  // Create and initialize two canvas
 
-//   var width = 70;
-//   var height = 70;
+  var canvas = document.createElement("canvas");
+  var ctx = canvas.getContext("2d");
+  var canvasCopy = document.createElement("canvas");
+  var copyContext = canvasCopy.getContext("2d");
 
-//   canvas.width = width;
-//   canvas.height = height;
-//   ctx.drawImage(img, 0, 0, width, height);
-//   console.log(canvas.toDataURL());
-//   return canvas.toDataURL();
-// }
+  // Create original image
+  var img = new Image();
+  img.src = base64;
+
+  // Determine new ratio based on max size
+  var ratio = 1;
+  if (img.width > maxWidth) ratio = maxWidth / img.width;
+  else if (img.height > maxHeight) ratio = maxHeight / img.height;
+  // Draw original image in second canvas
+  canvasCopy.width = img.width;
+  canvasCopy.height = img.height;
+  copyContext.drawImage(img, 0, 0);
+  // Copy and resize second canvas to first canvas
+  canvas.width = img.width * ratio;
+  canvas.height = img.height * ratio;
+  ctx.drawImage(
+    canvasCopy,
+    0,
+    0,
+    canvasCopy.width,
+    canvasCopy.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  return canvas.toDataURL();
+}

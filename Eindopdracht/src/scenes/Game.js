@@ -92,7 +92,7 @@ export default class Game extends Phaser.Scene {
       classType: Carrot,
     });
 
-    // Carrot Colliders
+    // Carrot🥕 Colliders
     this.physics.add.collider(this.platforms, this.carrots);
     this.physics.add.overlap(
       this.player,
@@ -182,12 +182,13 @@ export default class Game extends Phaser.Scene {
       this.player.setTexture("bunny-stand");
       this.clouds.tilePositionY -= 5;
     }
-    // Left keypress
+    // Left keypress⬅️
     if (this.cursors.left.isDown && !touchingDown) {
+      console.log(true);
       this.player.setVelocityX(-200);
       this.background.tilePositionX += 0.4;
       this.clouds.tilePositionX += 0.5;
-      //   rightkeypress
+      // right keypress➡️
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
       this.background.tilePositionX -= 0.4;
@@ -244,6 +245,7 @@ export default class Game extends Phaser.Scene {
     return carrot;
   }
 
+  // checks if player is colliding with a carrot🥕
   handleCollectCarrot(player, carrot) {
     this.carrots.killAndHide(carrot);
     this.physics.world.disableBody(carrot.body);
@@ -292,12 +294,13 @@ export default class Game extends Phaser.Scene {
   countdown(x) {
     if (this.startGame) {
       const time = Math.floor(this.timer++ / 60);
-      if (time < 61) {
+      if (time < 61) { //default 6️⃣1️⃣
         this.coundownIndicatorText.text = `Time Left: ${60 - time}`;
       } else {
         this.scene.start("game-over");
         this.timer = 0;
         this.startGame = false; //zzz
+        // fetch that stores the userdata in the database
       }
     }
 
