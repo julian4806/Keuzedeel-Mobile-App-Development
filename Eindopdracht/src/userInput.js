@@ -71,10 +71,8 @@ function saveUserSettingsToLocalStorage() {
   reader.addEventListener(
     "load",
     () => {
-      // localStorage.setItem("userimage", resizeImage(reader.result, 70, 70));
-      localStorage.setItem("userimage", resizebase64(reader.result, 140, 180));
+      resizebase64(reader.result, 140, 180);
       localStorage.setItem("username", username.value);
-      location.reload();
     },
     false
   );
@@ -125,28 +123,30 @@ function resizebase64(base64, maxWidth, maxHeight) {
   var img = new Image();
   img.src = base64;
 
-  // Determine new ratio based on max size
-  var ratio = 1;
-  if (img.width > maxWidth) ratio = maxWidth / img.width;
-  else if (img.height > maxHeight) ratio = maxHeight / img.height;
-  // Draw original image in second canvas
-  canvasCopy.width = img.width;
-  canvasCopy.height = img.height;
-  copyContext.drawImage(img, 0, 0);
-  // Copy and resize second canvas to first canvas
-  canvas.width = img.width * ratio;
-  canvas.height = img.height * ratio;
-  ctx.drawImage(
-    canvasCopy,
-    0,
-    0,
-    canvasCopy.width,
-    canvasCopy.height,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  return canvas.toDataURL();
+  img.addEventListener("load", () => {
+    // Determine new ratio based on max size
+    var ratio = 1;
+    if (img.width > maxWidth) ratio = maxWidth / img.width;
+    else if (img.height > maxHeight) ratio = maxHeight / img.height;
+    // Draw original image in second canvas
+    canvasCopy.width = img.width;
+    canvasCopy.height = img.height;
+    copyContext.drawImage(img, 0, 0);
+    // Copy and resize second canvas to first canvas
+    canvas.width = img.width * ratio;
+    canvas.height = img.height * ratio;
+    ctx.drawImage(
+      canvasCopy,
+      0,
+      0,
+      canvasCopy.width,
+      canvasCopy.height,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+    localStorage.setItem("userimage", canvas.toDataURL());
+    location.reload();
+  });
 }
