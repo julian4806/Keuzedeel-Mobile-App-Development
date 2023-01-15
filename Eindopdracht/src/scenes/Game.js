@@ -30,6 +30,7 @@ export default class Game extends Phaser.Scene {
   }
 
   preload() {
+    this.retrieveDataFromDatabase();
     // Load all the backgrouds in
     this.load.image("background", "assets/bg_layer1.jpg");
     this.load.image("clouds", "assets/clouds-white-small.png");
@@ -206,6 +207,7 @@ export default class Game extends Phaser.Scene {
     const bottomPlatform = this.findBottomMostPlatform();
     if (this.player.y > bottomPlatform.y + 200) {
       this.scene.start("game-over");
+      this.saveDataToDatabase();
       this.timer = 0; //zzz
       this.startGame = false;
     }
@@ -294,10 +296,12 @@ export default class Game extends Phaser.Scene {
   countdown(x) {
     if (this.startGame) {
       const time = Math.floor(this.timer++ / 60);
-      if (time < 61) { //default 6️⃣1️⃣
+      if (time < 61) {
+        //default 6️⃣1️⃣
         this.coundownIndicatorText.text = `Time Left: ${60 - time}`;
       } else {
         this.scene.start("game-over");
+        this.saveDataToDatabase();
         this.timer = 0;
         this.startGame = false; //zzz
         // fetch that stores the userdata in the database
@@ -310,5 +314,42 @@ export default class Game extends Phaser.Scene {
     // } else {
     //   this.coundownIndicatorText.text = `Time Left: ${60 - x}`;
     // }
+  }
+
+  saveDataToDatabase() {
+    fetch(
+      `http://localhost/school/Keuzedeel-Mobile-App-Development/Eindopdracht/src/php/saveHighScore.php?player=${username.value}&score=${this.carrotsCollected}`,
+      {
+        method: "get",
+      }
+    )
+      .then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
+          return response.text();
+        }
+        throw new Error(response.statusText);
+      })
+      .then(function (response) {
+        leaderboardData.innerHTML = response;
+      });
+  }
+
+  retrieveDataFromDatabase() {
+    fetch(
+      `http://localhost/school/Keuzedeel-Mobile-App-Development/Eindopdracht/src/php/saveHighScore.php`,
+      {
+        method: "get",
+      }
+    )
+      .then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
+          return response.text();
+        }
+        throw new Error(response.statusText);
+      })
+      .then(function (response) {
+        leaderboardData.innerHTML = response;
+        console.log(response)
+      });
   }
 }

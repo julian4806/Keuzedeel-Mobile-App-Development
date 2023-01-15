@@ -5,13 +5,19 @@ const closeLeaderboardModalButton = document.querySelector(
 );
 const leaderboard = document.querySelector(".leaderboard-modal");
 const leaderboardButton = document.querySelector(".leaderboard-button");
+const leaderboardData = document.querySelector(".leaderboard"); // used for fetch
 const closeSettingsModalButton = document.querySelector(
   ".close-settings-modal"
 );
 const settings = document.querySelector(".settings-modal");
 const settingsButton = document.querySelector(".settings-button");
 
-closeSettingsModalButton.onclick = closeModals;
+closeSettingsModalButton.onclick = () => {
+  closeModals();
+  saveUserSettings.innerText = `save`;
+  console.log((userImageUpload.value = ""));
+};
+
 closeLeaderboardModalButton.onclick = closeModals;
 
 function closeModals() {
@@ -54,6 +60,7 @@ const form = document.querySelector("form");
 const username = document.querySelector(".username");
 const displayUserImage = document.querySelector(".display-current-image > img");
 const saveUserSettings = document.querySelector(".save-user-settings");
+const userImageUpload = document.querySelector(".userimage");
 
 displayUserImage.src = localStorage.getItem("userimage");
 username.value = localStorage.getItem("username");
@@ -62,6 +69,17 @@ saveUserSettings.onclick = (e) => {
   saveUserSettingsToLocalStorage();
   return false;
 };
+
+// checks if an image is selected and then changing the innerText of the button accoerdingly
+userImageUpload.addEventListener("change", () => {
+  saveUserSettings.innerText = `save image and restart the game?`;
+});
+/*
+
+saveUserSettings.innerText = "";
+  console.log((userImageUpload.value = ""));
+
+*/
 
 function saveUserSettingsToLocalStorage() {
   //userimage
@@ -106,7 +124,7 @@ function resetTextSaveButton() {
   }, 1000);
 }
 
-// test
+// function that saves the user-image to the localStorage📩
 function resizebase64(base64, maxWidth, maxHeight) {
   // Max size for thumbnail
   if (typeof maxWidth === "undefined") maxWidth = 500;
@@ -149,4 +167,20 @@ function resizebase64(base64, maxWidth, maxHeight) {
     localStorage.setItem("userimage", canvas.toDataURL());
     location.reload();
   });
+}
+
+// checks if the user has provided a username, if not rerun the function
+let promptValue;
+window.onload = startUserName();
+function startUserName() {
+  if (!localStorage.getItem("username")) {
+    promptValue = prompt("provide a username (at least 3 characters)");
+    if (!promptValue || promptValue.length < 3) {
+      startUserName();
+    } else {
+      localStorage.setItem("username", promptValue);
+      displayUserImage.src = localStorage.getItem("userimage");
+      username.value = localStorage.getItem("username");
+    }
+  }
 }
