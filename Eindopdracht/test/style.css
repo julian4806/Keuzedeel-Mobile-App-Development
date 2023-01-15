@@ -1,0 +1,14 @@
+body {
+  display: grid;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.dot {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: mediumpurple;
+  transition: transform 0.25s;
+}

@@ -1,47 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <script src="../src/cdn/phaser.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='script.js' defer></script>
+    <link rel='stylesheet' href='style.css'>
+    <title>Accelerometer</title>
 </head>
 
 <body>
-    <div id="game"></div>
-    <script>
-
-        const phaserConfig = {
-            type: Phaser.AUTO,
-            parent: "game",
-            width: 1280,
-            height: 720,
-            backgroundColor: "#5DACD8",
-            scene: {
-                init: initScene,
-                preload: preloadScene,
-                create: createScene,
-                update: updateScene
-            }
-        };
-
-        const game = new Phaser.Game(phaserConfig);
-
-        var cloudsWhite, cloudsWhiteSmall;
-
-        function initScene() { }
-        function preloadScene() {
-            this.load.image("clouds-white", "clouds-white.png");
-            this.load.image("clouds-white-small", "clouds-white-small.png");
-        }
-        function createScene() {
-            cloudsWhite = this.add.tileSprite(640, 200, 1280, 400, "clouds-white");
-            cloudsWhiteSmall = this.add.tileSprite(640, 200, 1280, 400, "clouds-white-small");
-        }
-        function updateScene() {
-            cloudsWhite.tilePositionX += 0.5;
-            cloudsWhiteSmall.tilePositionX += 0.25;
-        }
-
-    </script>
+    <div class="dot"></div>
+    <p></p>
 </body>
 
 </html>
