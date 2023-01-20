@@ -132,7 +132,8 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0, -1.2);
 
     // Keyboard⌨️
-    this.input.keyboard.on("keydown-ENTER", () => {
+    // this.input.keyboard.on("keydown-ENTER", () => {
+    this.input.on("pointerdown", () => {
       closeModals();
       if (!this.startGame) {
         caniopenthemenu = false;
@@ -185,7 +186,9 @@ export default class Game extends Phaser.Scene {
       this.player.setTexture("bunny-stand");
       this.clouds.tilePositionY -= 5;
     }
+
     // Left keypress⬅️
+    /*
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
       this.background.tilePositionX += 0.4;
@@ -201,8 +204,24 @@ export default class Game extends Phaser.Scene {
       this.clouds.tilePositionX += 0.2;
       this.background.tilePositionX += 0.1;
     }
-
+    */
     this.horizontalWrap(this.player);
+    window.addEventListener("devicemotion", (e) => {
+      const x = Math.round(e.accelerationIncludingGravity.x) * 30;
+      const p = document.querySelector('.p')
+      if (x < -60 && !touchingDown) { // right
+        this.player.setVelocityX(200);
+        this.background.tilePositionX -= 0.0004;
+        this.clouds.tilePositionX -= 0.0005;
+      } else if (x > 60 && !touchingDown) { //left
+        this.player.setVelocityX(-200);
+        this.background.tilePositionX += 0.0004;
+        this.clouds.tilePositionX += 0.0005;
+      } else {
+        this.player.setVelocityX(0);
+        this.clouds.tilePositionX += 0.002;
+      }
+    }, true);
 
     // check if player surpasses last platform ☠️
     const bottomPlatform = this.findBottomMostPlatform();
@@ -225,7 +244,10 @@ export default class Game extends Phaser.Scene {
         leaderboardOpen();
       }
     };
+
+
   }
+
 
   horizontalWrap(sprite) {
     const halfWidth = sprite.displayWidth * 0.5;
@@ -317,6 +339,7 @@ export default class Game extends Phaser.Scene {
     // }
   }
 
+
   saveDataToDatabase() {
     fetch(
       `${this.path}?player=${username.value}&score=${this.carrotsCollected}`,
@@ -349,4 +372,7 @@ export default class Game extends Phaser.Scene {
         leaderboardData.innerHTML = response;
       });
   }
+
+  // Motion Sensor Controls🤳
+
 }

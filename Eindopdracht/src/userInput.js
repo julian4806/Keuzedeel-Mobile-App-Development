@@ -15,6 +15,7 @@ const settingsButton = document.querySelector(".settings-button");
 closeSettingsModalButton.onclick = () => {
   closeModals();
   saveUserSettings.innerText = `save`;
+  console.log((userImageUpload.value = ""));
 };
 
 closeLeaderboardModalButton.onclick = closeModals;
@@ -76,7 +77,7 @@ userImageUpload.addEventListener("change", () => {
 /*
 
 saveUserSettings.innerText = "";
-  
+  console.log((userImageUpload.value = ""));
 
 */
 
@@ -183,3 +184,19 @@ function startUserName() {
     }
   }
 }
+
+// testcode
+// handle device motion controls 🤳
+// const handleMotion = (e) => {
+//   const x = Math.round(e.accelerationIncludingGravity.x) * 30;
+//   const p = document.querySelector('.p')
+//   if (x < -60) {
+//     p.innerText = "right";
+//   } else if (x > 60) {
+//     p.innerText = "left";
+//   } else {
+//     p.innerText = "";
+//   }
+// };
+
+// window.addEventListener("devicemotion", handleMotion, true);

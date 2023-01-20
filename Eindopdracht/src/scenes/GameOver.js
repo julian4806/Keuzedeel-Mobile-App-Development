@@ -15,12 +15,13 @@ export default class GameOver extends Phaser.Scene {
         height * 0.5,
         "Game Over,\nYour score will be saved into the database!\n\nTap the screen to play again!",
         {
-          fontSize:18,
+          fontSize: 18,
         }
       )
       .setOrigin(0.5);
 
-    this.input.keyboard.once("keydown-ENTER", () => {
+    // this.input.keyboard.once("keydown-ENTER", () => {
+    this.input.once("pointerdown", () => {
       this.startGame = false;
       this.scene.start("start-game");
     });
