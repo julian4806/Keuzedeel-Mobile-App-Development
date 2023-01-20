@@ -15,7 +15,6 @@ const settingsButton = document.querySelector(".settings-button");
 closeSettingsModalButton.onclick = () => {
   closeModals();
   saveUserSettings.innerText = `save`;
-  console.log((userImageUpload.value = ""));
 };
 
 closeLeaderboardModalButton.onclick = closeModals;
@@ -77,7 +76,7 @@ userImageUpload.addEventListener("change", () => {
 /*
 
 saveUserSettings.innerText = "";
-  console.log((userImageUpload.value = ""));
+  
 
 */
 

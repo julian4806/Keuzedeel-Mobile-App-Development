@@ -22,7 +22,7 @@ export default class GameOver extends Phaser.Scene {
 
     this.input.keyboard.once("keydown-ENTER", () => {
       this.startGame = false;
-      this.scene.start("game");
+      this.scene.start("start-game");
     });
   }
 }

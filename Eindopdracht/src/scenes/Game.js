@@ -20,6 +20,8 @@ export default class Game extends Phaser.Scene {
 
   startGame;
   canOpenMenus;
+  path = `http://localhost/school/periode-5/Keuzedeel Mobile App Development/Eindopdracht/src/php/saveHighScore.php`;
+  // path = `https://julianvh.nl/keuzedeel/src/php/saveHighScore.php`;
 
   constructor() {
     super("game");
@@ -185,7 +187,6 @@ export default class Game extends Phaser.Scene {
     }
     // Left keypress⬅️
     if (this.cursors.left.isDown && !touchingDown) {
-      console.log(true);
       this.player.setVelocityX(-200);
       this.background.tilePositionX += 0.4;
       this.clouds.tilePositionX += 0.5;
@@ -290,7 +291,7 @@ export default class Game extends Phaser.Scene {
       this.speedIndicatorText.text = `Speed: ${this.bunnySpeed}mph`;
       this.speedIndicatorText.setBackgroundColor("lightgreen");
     }
-    // console.log(this.bunnySpeed);
+    //
   }
 
   countdown(x) {
@@ -318,7 +319,7 @@ export default class Game extends Phaser.Scene {
 
   saveDataToDatabase() {
     fetch(
-      `http://localhost/school/Keuzedeel-Mobile-App-Development/Eindopdracht/src/php/saveHighScore.php?player=${username.value}&score=${this.carrotsCollected}`,
+      `${this.path}?player=${username.value}&score=${this.carrotsCollected}`,
       {
         method: "get",
       }
@@ -335,12 +336,9 @@ export default class Game extends Phaser.Scene {
   }
 
   retrieveDataFromDatabase() {
-    fetch(
-      `http://localhost/school/Keuzedeel-Mobile-App-Development/Eindopdracht/src/php/saveHighScore.php`,
-      {
-        method: "get",
-      }
-    )
+    fetch(`${this.path}`, {
+      method: "get",
+    })
       .then(function (response) {
         if (response.status >= 200 && response.status < 300) {
           return response.text();
@@ -349,7 +347,6 @@ export default class Game extends Phaser.Scene {
       })
       .then(function (response) {
         leaderboardData.innerHTML = response;
-        console.log(response)
       });
   }
 }
