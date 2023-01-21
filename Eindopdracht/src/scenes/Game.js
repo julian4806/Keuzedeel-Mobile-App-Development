@@ -83,13 +83,20 @@ export default class Game extends Phaser.Scene {
 
     // Bunny🐇 Physics
     this.player = this.physics.add
+      // adds the bunny sprite with the width and height
       .sprite(240, 320, "bunny-stand")
       .setScale(0.5);
+    // adds the collider on the platfroms and the player
     this.physics.add.collider(this.platforms, this.player);
+
+    // sets the collision detection only on the bottom of the bunny
     this.player.body.checkCollision.up = false;
     this.player.body.checkCollision.left = false;
     this.player.body.checkCollision.right = false;
+
+    // camera follows the player
     this.cameras.main.startFollow(this.player);
+    // Locks the background and makes sure the player can go out of the screen by a little margin
     this.cameras.main.setDeadzone(this.scale.width * 1.5);
     this.carrots = this.physics.add.group({
       classType: Carrot,
@@ -206,9 +213,10 @@ export default class Game extends Phaser.Scene {
     }
     */
     this.horizontalWrap(this.player);
+
+
     window.addEventListener("devicemotion", (e) => {
       const x = Math.round(e.accelerationIncludingGravity.x) * 30;
-      const p = document.querySelector('.p')
       if (x < -60 && !touchingDown) { // right
         this.player.setVelocityX(200);
         this.background.tilePositionX -= 0.0004;
@@ -223,7 +231,7 @@ export default class Game extends Phaser.Scene {
       }
     }, true);
 
-    // check if player surpasses last platform ☠️
+    // check if player surpasses the last platform ☠️
     const bottomPlatform = this.findBottomMostPlatform();
     if (this.player.y > bottomPlatform.y + 200) {
       this.scene.start("game-over");
@@ -244,10 +252,7 @@ export default class Game extends Phaser.Scene {
         leaderboardOpen();
       }
     };
-
-
   }
-
 
   horizontalWrap(sprite) {
     const halfWidth = sprite.displayWidth * 0.5;
@@ -341,6 +346,7 @@ export default class Game extends Phaser.Scene {
 
 
   saveDataToDatabase() {
+    // sends the data towards the PHP file
     fetch(
       `${this.path}?player=${username.value}&score=${this.carrotsCollected}`,
       {
@@ -351,14 +357,17 @@ export default class Game extends Phaser.Scene {
         if (response.status >= 200 && response.status < 300) {
           return response.text();
         }
+        // throws an error if the request could not be made
         throw new Error(response.statusText);
       })
       .then(function (response) {
+        // renders the result to the leaderboard
         leaderboardData.innerHTML = response;
       });
   }
 
   retrieveDataFromDatabase() {
+    // gets the data from the PHP file. Doesn't insert anything
     fetch(`${this.path}`, {
       method: "get",
     })
@@ -372,7 +381,4 @@ export default class Game extends Phaser.Scene {
         leaderboardData.innerHTML = response;
       });
   }
-
-  // Motion Sensor Controls🤳
-
 }
