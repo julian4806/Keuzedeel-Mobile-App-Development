@@ -74,12 +74,6 @@ saveUserSettings.onclick = (e) => {
 userImageUpload.addEventListener("change", () => {
   saveUserSettings.innerText = `save image and restart the game?`;
 });
-/*
-
-saveUserSettings.innerText = "";
-  console.log((userImageUpload.value = ""));
-
-*/
 
 function saveUserSettingsToLocalStorage() {
   //userimage
@@ -184,19 +178,3 @@ function startUserName() {
     }
   }
 }
-
-// testcode
-// handle device motion controls 🤳
-// const handleMotion = (e) => {
-//   const x = Math.round(e.accelerationIncludingGravity.x) * 30;
-//   const p = document.querySelector('.p')
-//   if (x < -60) {
-//     p.innerText = "right";
-//   } else if (x > 60) {
-//     p.innerText = "left";
-//   } else {
-//     p.innerText = "";
-//   }
-// };
-
-// window.addEventListener("devicemotion", handleMotion, true);

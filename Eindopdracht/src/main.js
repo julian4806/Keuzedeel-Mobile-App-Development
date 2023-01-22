@@ -18,7 +18,7 @@ export default new Phaser.Game({
     default: "arcade",
     arcade: {
       gravity: {
-        // sets the amount of gravitaty
+        // sets the amount of gravity
         y: 200,
       },
       // shows lines and hitboxes handy for development
@@ -31,4 +31,3 @@ export default new Phaser.Game({
     forceSetTimeOut: true,
   },
 });
-

@@ -20,7 +20,6 @@ export default class GameOver extends Phaser.Scene {
       )
       .setOrigin(0.5);
 
-    // this.input.keyboard.once("keydown-ENTER", () => {
     this.input.once("pointerdown", () => {
       this.startGame = false;
       this.scene.start("start-game");

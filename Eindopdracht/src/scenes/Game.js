@@ -38,8 +38,6 @@ export default class Game extends Phaser.Scene {
     this.load.image("clouds", "assets/clouds-white-small.png");
     this.load.image("platform", "assets/ground_grass.png");
 
-    // localStorage.getItem("userimage");
-
     let dataURI = localStorage.getItem("userimage");
     if (dataURI !== null) {
       let data = new Image();
@@ -119,7 +117,7 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     this.pausePlayIndicatorText = this.add
-      .text(0, 0, "Press ENTER✅", { color: "#000" })
+      .text(0, 0, "Click the screen✅", { color: "#000" })
       .setScrollFactor(0)
       .setOrigin(0, 0);
 
@@ -138,8 +136,6 @@ export default class Game extends Phaser.Scene {
       .setScrollFactor(0)
       .setOrigin(0, -1.2);
 
-    // Keyboard⌨️
-    // this.input.keyboard.on("keydown-ENTER", () => {
     this.input.on("pointerdown", () => {
       closeModals();
       if (!this.startGame) {
@@ -194,8 +190,8 @@ export default class Game extends Phaser.Scene {
       this.clouds.tilePositionY -= 5;
     }
 
+    // allows for keyboard controlls also
     // Left keypress⬅️
-    /*
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
       this.background.tilePositionX += 0.4;
@@ -211,25 +207,30 @@ export default class Game extends Phaser.Scene {
       this.clouds.tilePositionX += 0.2;
       this.background.tilePositionX += 0.1;
     }
-    */
+
     this.horizontalWrap(this.player);
 
-
-    window.addEventListener("devicemotion", (e) => {
-      const x = Math.round(e.accelerationIncludingGravity.x) * 30;
-      if (x < -60 && !touchingDown) { // right
-        this.player.setVelocityX(200);
-        this.background.tilePositionX -= 0.0004;
-        this.clouds.tilePositionX -= 0.0005;
-      } else if (x > 60 && !touchingDown) { //left
-        this.player.setVelocityX(-200);
-        this.background.tilePositionX += 0.0004;
-        this.clouds.tilePositionX += 0.0005;
-      } else {
-        this.player.setVelocityX(0);
-        this.clouds.tilePositionX += 0.002;
-      }
-    }, true);
+    window.addEventListener(
+      "devicemotion",
+      (e) => {
+        const x = Math.round(e.accelerationIncludingGravity.x) * 30;
+        if (x < -60 && !touchingDown) {
+          // right
+          this.player.setVelocityX(200);
+          this.background.tilePositionX -= 0.0004;
+          this.clouds.tilePositionX -= 0.0005;
+        } else if (x > 60 && !touchingDown) {
+          //left
+          this.player.setVelocityX(-200);
+          this.background.tilePositionX += 0.0004;
+          this.clouds.tilePositionX += 0.0005;
+        } else {
+          this.player.setVelocityX(0);
+          this.clouds.tilePositionX += 0.002;
+        }
+      },
+      true
+    );
 
     // check if player surpasses the last platform ☠️
     const bottomPlatform = this.findBottomMostPlatform();
@@ -254,6 +255,7 @@ export default class Game extends Phaser.Scene {
     };
   }
 
+  // Makes sure the player appears on the other side of the screen when leaving the screen
   horizontalWrap(sprite) {
     const halfWidth = sprite.displayWidth * 0.5;
     const gameWidth = this.scale.width;
@@ -335,15 +337,7 @@ export default class Game extends Phaser.Scene {
         // fetch that stores the userdata in the database
       }
     }
-
-    //   this.timer = 0;
-    //   this.startGame = false;
-    //   this.scene.start("game-over");
-    // } else {
-    //   this.coundownIndicatorText.text = `Time Left: ${60 - x}`;
-    // }
   }
-
 
   saveDataToDatabase() {
     // sends the data towards the PHP file
